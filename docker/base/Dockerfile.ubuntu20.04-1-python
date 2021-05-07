@@ -13,12 +13,26 @@ RUN cd /opt/build/ && \
     cd Python-3.8.5 && \
     CFLAGS="--exclude-file=/tmp/python-vfc-exclude.txt" ./configure --enable-optimizations --with-ensurepip=install &&\
     make -j &&\
-    make install &&\ 
+    make install &&\
     wget https://bootstrap.pypa.io/get-pip.py &&\
     python3 get-pip.py
 
 # Remove temporary files
 RUN rm -rf /opt/build/*
+
+# Add libGSL and R to the mix - it's easy since we have the libmath linked already
+RUN apt-get install -y r-base-dev gsl-bin
+# OR
+RUN mkdir -p /opt/R/ &&\
+    cd /opt/R/ &&\
+    wget https://cran.r-project.org/src/base/R-4/R-4.0.5.tar.gz &&\
+    tar -xf R-4.0.5.tar.gz &&\
+    cd R-4.0.5 &&\
+    ./configure
+
+# For Lib GSL: create libcblas and libm links in the LD_LIBRARY_PATH location
+RUN ln -s /usr/local/lib/libcblas.so /usr/local/lib/libgslcblas.so.0 &&\
+    ln -s /opt/mca-libmath/libmath.so /usr/local/lib/libm.so
 
 # Restore default MCA mode
 RUN echo "libinterflop_mca.so -m rr" > $VFC_BACKENDS_FROM_FILE

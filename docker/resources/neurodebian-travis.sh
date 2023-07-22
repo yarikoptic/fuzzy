@@ -3,7 +3,7 @@
 # A universal helper to enable NeuroDebian repository for a travis
 # environment.
 #
-# Its purpose to remove all repetative actions from various .travis.yml spread
+# Its purpose to remove all repetitive actions from various .travis.yml spread
 # across projects and gain control in the future to point  to an alternative,
 # more appropriate for travis deployments, mirror.
 
